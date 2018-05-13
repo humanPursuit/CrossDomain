@@ -36,12 +36,14 @@ app.get("/", function(req, res) {
   res.send("Server side is working");
 });
 
+// 处理jsonp
 app.all("/jsonp", function(req, res) {
   var callbackName = req.query.callback;
   var resText = callbackName + "(" + JSON.stringify(data) + ")";
   res.send(resText);
 });
 
+// 处理cors
 app.all("/cors", function(req, res) {
   // Access-Control-Allow-Origin, 表示允许跨域使用的域名
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:30000");
@@ -69,4 +71,32 @@ app.all("/postJson", function(req, res) {
   if (req.method == "OPTIONS") res.send(200);
 
   res.json(req.body);
+});
+
+// 处理cookie
+app.all("/withCookie", function(req, res) {
+  var cookies = req.get('cookie');
+  var cookieData = Object.create(null);
+  if (cookies) {
+    cookies.split("&").forEach(function(cookie) {
+      var arr = cookie.split("=");
+      var key = arr[0];
+      var value = arr[1];
+
+      cookieData[key] = value;
+    });
+  }
+  var origin = req.get("origin");
+  res.setHeader("Access-Control-Allow-Origin", origin);
+  res.setHeader("Access-Control-Allow-Methods", req.method);
+  // 使用cookie跨域
+  res.setHeader("Access-Control-Allow-Credentials", true);
+
+  //  The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'. Origin 'http://localhost:30000' is therefore not allowed access. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+  // 使用cookie跨域时，Access-Control-Allow-Origin 不能使用通配符，必须和调用方同域;
+  // 不合法
+  // res.setHeader("Access-Control-Allow-Origin", "*");
+  // res.setHeader("Access-Control-Allow-Methods", "*");
+
+  res.json({ name: cookieData.name || "foobar" });
 });

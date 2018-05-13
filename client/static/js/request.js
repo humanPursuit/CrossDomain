@@ -6,11 +6,13 @@
 describe("cross origin request", function() {
   var remoteBase = "http://localhost:30001";
 
+  /**
+   * JSONP 跨域
+   */
+  // 只能处理GET请求，需要被调用端的代码修改
   it(
     "jsonp request",
     function(done) {
-      // JSONP
-      // 只能处理GET请求，需要被调用端的代码修改
       $.ajax({
         url: remoteBase + "/jsonp",
         // method: 'POST', // 无效 JSONP 不支持
@@ -28,6 +30,14 @@ describe("cross origin request", function() {
     },
     2000
   );
+
+  /**
+   * CORS 跨域
+   */
+  // 简单请求
+  // method: GET HEAD POST
+  // Content-Type: text/plain multipart/form-data application/x-www-form-urlencoded
+  // requestHeader 没有自定义请求头
 
   // Failed to load http://localhost:30001/cors: No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin 'http://localhost:30000' is therefore not allowed access.
   // 直接调用下面的代码会报如上错误，在http-response-header中没有指定Access-Control-Allow-Origin 需在被调用端处理
@@ -63,17 +73,12 @@ describe("cross origin request", function() {
     2000
   );
 
-  // 简单请求
-  // method: GET HEAD POST
-  // Content-Type: text/plain multipart/form-data application/x-www-form-urlencoded
-  // requestHeader 没有自定义请求头
-
   // 非简单请求
   // method: put delete
   // Content-Type: application/json
   // 带自定义请求头
 
-  // 非简单请求  preflight request
+  // 非简单请求 需要预检请求（preflight request）
 
   it(
     "POST json request",
@@ -89,6 +94,31 @@ describe("cross origin request", function() {
         contentType: "application/json;chartset=UTF-8",
         success: function(data) {
           expect(data).toEqual(postData);
+          done();
+        }
+      });
+    },
+    2000
+  );
+
+  /**
+   * Cookie 跨域
+   */
+  // 这里的cookie 是被调用的域名下的cookie
+  // 例如 页面origin是 a.com，接口origin是 b.com, cookie是加载b.com下的
+  it(
+    "with cookie",
+    function(done) {
+      $.ajax({
+        url: remoteBase + "/withCookie",
+        method: "POST",
+        dataType: "JSON",
+        // 使用cookie跨域
+        xhrFields: {
+          withCredentials: true
+        },
+        success: function(data) {
+          expect(data).toEqual({ name: "foo" });
           done();
         }
       });

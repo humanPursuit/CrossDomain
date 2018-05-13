@@ -21,7 +21,6 @@ nodejs expressjs + jasmine test cross domain request
 
 ### 被调用端解决方法
 1. jsonp 
----
 缺点是只能处理`GET`请求，其他的一概没用
 ```
   $.ajax({
@@ -105,7 +104,7 @@ nodejs expressjs + jasmine test cross domain request
 
 ```
 
-###调用端解决方法
+### 调用端解决方法
 - HttpServer代理 转发跨域的xhr请求，让浏览器看起来是同域的请求 Appache、Ngix
 
 

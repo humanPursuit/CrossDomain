@@ -1,7 +1,6 @@
 # CrossDomain
-nodejs expressjs + jasmine test cross domain request
-
-## [imooc ajax跨域完全讲解](https://www.imooc.com/learn/947) 
+nodejs expressjs + jasmine test cross domain request  
+[imooc ajax跨域完全讲解](https://www.imooc.com/learn/947) 
 
 ## 简单总结:
 ### 跨域产生的原因

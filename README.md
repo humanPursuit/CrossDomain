@@ -104,7 +104,7 @@ nodejs expressjs + jasmine test cross domain request
 ```
 
 ### 调用端解决方法
-- HttpServer代理 转发跨域的xhr请求，让浏览器看起来是同域的请求 Appache、Ngix
+- HttpServer代理 转发跨域的xhr请求，让浏览器看起来是同域的请求 Appache、Nginx
 
 
 

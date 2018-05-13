@@ -68,14 +68,14 @@ app.all("/postJson", function(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   // 非简单请求 处理预检请求
-  if (req.method == "OPTIONS") res.send(200);
+  if (req.method == "OPTIONS") return res.send();
 
   res.json(req.body);
 });
 
 // 处理cookie
 app.all("/withCookie", function(req, res) {
-  var cookies = req.get('cookie');
+  var cookies = req.get("cookie");
   var cookieData = Object.create(null);
   if (cookies) {
     cookies.split("&").forEach(function(cookie) {
@@ -99,4 +99,20 @@ app.all("/withCookie", function(req, res) {
   // res.setHeader("Access-Control-Allow-Methods", "*");
 
   res.json({ name: cookieData.name || "foobar" });
+});
+
+// 处理自定义请求头
+app.all("/customHeader", function(req, res) {
+  var origin = req.get("origin");
+  var headers = req.headers["access-control-request-headers"];
+  res.setHeader("Access-Control-Allow-Origin", origin);
+  res.setHeader("Access-Control-Allow-Methods", req.method);
+  // Failed to load http://localhost:30001/customHeader: Request header field x-header2 is not allowed by Access-Control-Allow-Headers in preflight response.
+  // 和content-type类似，一样要在Access-Control-Allow-Headers添加\
+  if (headers) {
+    res.setHeader("Access-Control-Allow-Headers", headers);
+  }
+  if (req.method == "OPTIONS") return res.send();
+
+  res.json({ header: req.get("x-header1") + " " + req.get("x-header2") });
 });

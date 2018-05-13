@@ -125,4 +125,31 @@ describe("cross origin request", function() {
     },
     2000
   );
+
+  /**
+   * 自定义请求头跨域 跨域
+   */
+  it(
+    "custom header",
+    function(done) {
+      // RequestHeader中会添加 Access-Control-Request-Headers: x-header1,x-header2
+      $.ajax({
+        url: remoteBase + "/customHeader",
+        method: "POST",
+        dataType: "JSON",
+        // 使用cookie跨域
+        headers: {
+          "x-header1": "AAA"
+        },
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("x-header2", "BBB");
+        },
+        success: function(data) {
+          expect(data).toEqual({ header: "AAA BBB" });
+          done();
+        }
+      });
+    },
+    2000
+  );
 });
